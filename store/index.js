@@ -1,4 +1,6 @@
 export const state = () => ({
+  fooddata : [
+    {
     name: "Taco bout Eating Tacos",
     deliveryTime: 25,
     meal: ["lunch", "dinner"],
@@ -141,6 +143,8 @@ export const state = () => ({
         description: "Chinese eggplant filled with ground shrimp in sauce"
       }
     ]
+}
+]
 })
 
 // export const getters = {
