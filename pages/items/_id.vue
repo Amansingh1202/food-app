@@ -6,34 +6,47 @@
             <h2>Description</h2>
             <p>{{ currentItem.description }}</p>
         </div>
+        <app-toast id="message" v-if="cartSubmitted">Order Submitted<br>
+       Check out more <nuxt-link to="/restaurants">Restaurants</nuxt-link> 
+        </app-toast>
         <div class="div3">
             <h2>{{ currentItem.item }}</h2>
             <h2>Price:${{ currentItem.price }}</h2>
             <input type="number" min="0" v-model="numberFood" />
-            <button>Add to Cart:{{ totalPrice }}</button>
+            <button @click="submitCart">Add to Cart:{{ totalPrice }}</button>
         </div>
         <div class="div4">
             <h2>Options</h2>
-            <p v-for="option in currentItem.options" :key="option">
-                <input type="checkbox" :name="option" :id="option" :value="option" v-model="checkedOptions">
+            <div v-if="currentItem.options">
+                <p v-for="option in currentItem.options" :key="option">
+                <input type="radio" :name="option" :id="option" :value="option" v-model="checkedOptions">
                 <label :for="option">{{ option }}</label>
             </p>
+            </div>
+            <div v-else>
+                No Options
+            </div>
         </div>
         <div class="div5">
             <h2>Add Ons</h2>
-            <p v-for="addOn in currentItem.addOns" :key="addOn">
+            <div v-if="currentItem.addOns">
+                <p v-for="addOn in currentItem.addOns" :key="addOn">
                 <input type="checkbox" :value="addOn" :name="addOn" :id="addOn" v-model="checkedAddOns">
                 <label :for="addOn">{{ addOn }}</label>
             </p>
+            </div>
+            <div v-else>
+                No Add Ons
+            </div>
         </div>
     </div>
-    <pre>{{ $data }}</pre>
     </div>
 </template>
 
 <script>
 
 import {mapState} from "vuex";
+import AppToast from '../../components/AppToast.vue';
 
 export default {
     data(){
@@ -41,9 +54,11 @@ export default {
             id:this.$route.params.id,
             numberFood:0,
             checkedAddOns:[],
-            checkedOptions:[],
+            checkedOptions:"",
+            cartSubmitted:false
         }
     },
+    components: { AppToast },
     computed:{
         ...mapState([
             'fooddata'
@@ -61,7 +76,26 @@ export default {
             return result
         },
         totalPrice(){
-            return this.currentItem.price*this.numberFood
+            return (this.currentItem.price*this.numberFood).toFixed(2);
+        }
+    },
+    methods:{
+        submitCart(){
+            let formOutput = {
+                item:this.currentItem.item,
+                count:this.numberFood,
+                options:this.checkedOptions,
+                addOns:this.checkedAddOns,
+                combinedPrice:this.totalPrice,
+            }
+            if (this.numberFood>0){
+            this.cartSubmitted = true;
+            this.$store.commit('addToCart',formOutput);
+            setTimeout(function () {
+                document.getElementById('message').style.display='none';
+                }, 5000);
+                return false;
+            }
         }
     }
 }
