@@ -12,10 +12,8 @@ export const getters = {
         return totalfood
       }
       for(var i=0;i<state.cart.length;i++){
-        console.log(state.cart[i])
         totalfood += parseInt(state.cart[i].count)
       }
-      console.log(totalfood)
       return totalfood
     }
 }
