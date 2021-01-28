@@ -1,13 +1,13 @@
 <template>
     <main class="container cart">
-        <div class="cartHeader">Cart Items</div>
         <div v-if="cartEmpty">
             <h2>Your Cart</h2>
             <hungry-logo></hungry-logo>
             <h3>Your cart is empty</h3>
-            <button>Fill it up</button>
+            <nuxt-link to="/restaurants"><button>Restaurants</button></nuxt-link>
         </div>
         <div v-else>
+            <div class="cartHeader">Cart Items</div>
             <div v-for="cartValue in cart" :key="cartValue.id">
                 <div class="container center">
                     <div class="card">
